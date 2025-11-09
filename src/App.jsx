@@ -1,28 +1,41 @@
-import { useState } from 'react'
+import { useEffect } from 'react';
+import Hero from './components/Hero';
+import About from './components/About';
+import Skills from './components/Skills';
+import Timeline from './components/Timeline';
+import Projects from './components/Projects';
+import Contact from './components/Contact';
+import { motion } from 'framer-motion';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Enable smooth scroll for anchor links
+  useEffect(() => {
+    if ('scrollBehavior' in document.documentElement.style) return;
+    // polyfill-like fallback
+    const onClick = (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="scroll-smooth">
+      <Hero />
+      <About />
+      <Skills />
+      <Timeline />
+      <Projects />
+      <Contact />
+    </motion.div>
+  );
 }
 
-export default App
+export default App;
